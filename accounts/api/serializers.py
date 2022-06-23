@@ -14,12 +14,12 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
 
-class SignupSerializer(serializers.ModelSerializer):
+class SignupSerializer(serializers.ModelSerializer): #creat
     username = serializers.CharField(max_length=20, min_length=6)
     password = serializers.CharField(max_length=20, min_length=6)
     email = serializers.EmailField()
 
-    class Meta:
+    class Meta:  #creat a user
         model = User
         fields = ('username', 'email', 'password')
 
@@ -28,11 +28,11 @@ class SignupSerializer(serializers.ModelSerializer):
 
         if User.objects.filter(username=data['username'].lower()).exists():
             raise exceptions.ValidationError({
-                'message': 'This username has been occupied.'
+                'username': 'This username has been occupied.'
             })
         if User.objects.filter(email=data['email'].lower()).exists():
             raise exceptions.ValidationError({
-                'message': 'This email address has been occupied.'
+                'email': 'This email address has been occupied.'
             })
         return data
 
