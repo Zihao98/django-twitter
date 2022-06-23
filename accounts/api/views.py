@@ -45,23 +45,28 @@ class AccountViewSet(viewsets.ViewSet):
                 "success": False,
                 "message": "Please check input",
                 "errors": serializer.errors,
-            }, status=400)
-        username = serializer.validated_data['username']
+            }, status=400)    #400 errors from client
+
+        username = serializer.validated_data['username']   # validated_data helps retrieving data
         password = serializer.validated_data['password']
 
         # django orm
+        #check if user exist
         if not User.objects.filter(username = username).exists():
             return Response({
                 "success": False,
                 "message": "User does not exists",
             }, status = 400)
 
+        #validation ok, login
         user = django_authenticate(username=username, password=password)
         if not user or user.is_anonymous:
             return Response({
                 "success": False,
                 "message": "username and password does not match",
             }, status=400)
+
+        #call login API
         django_login(request, user)
         return Response({
             "success": True,
@@ -84,12 +89,12 @@ class AccountViewSet(viewsets.ViewSet):
                 "errors": serializer.errors,
             }, status=400)
 
-        user = serializer.save()
+        user = serializer.save()  #save a user
         django_login(request, user)
         return Response({
             'success': True,
             'user': UserSerializer(user).data,
-        })
+        }, status=201)
 
 
 
